@@ -489,7 +489,7 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
     case typeof thankYou === "string" && thankYou.indexOf("http") === 0:
       break;
     case typeof thankYou === "string":
-      ThankYouJsx = ({ thankYou }: { thankYou: string }) => <p>{thankYou}</p>;
+      ThankYouJsx = ({ thankYou }: { thankYou: string }) => <>{thankYou}</>;
       break;
     default:
       ThankYouJsx = () => <div>Thank you for your submission!</div>;
