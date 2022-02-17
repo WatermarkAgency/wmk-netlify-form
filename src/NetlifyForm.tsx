@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 import get from "lodash/get";
 import { useState, useRef, useEffect } from "react";
 
@@ -107,22 +107,50 @@ const FieldFile = ({
   isRequired = true,
   showLabel = false,
   name,
-  label = "Upload File"
+  label = "Upload File",
+  maxKBytes
 }: {
   isRequired?: boolean;
   showLabel?: boolean;
   name: string;
   label?: string;
+  maxKBytes?: number;
 }) => {
+  const [errorMsg, setErrorMsg] = useState(false);
+  const max = maxKBytes * 1024;
+  const handleUploadValidation = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.currentTarget.files[0];
+    if (maxKBytes && file.size > max) {
+      event.currentTarget.value = "";
+      setErrorMsg(true);
+    } else {
+      setErrorMsg(false);
+    }
+  };
   return (
     <Row>
       <Col>
         <Form.Label
           htmlFor={name}
           visuallyHidden={showLabel ? undefined : true}>
-          {label} {isRequired ? <span>*</span> : null}
+          {label} {isRequired ? <span>*</span> : null}{" "}
+          {max ? <sup>Max Upload Size {max}KB</sup> : null}
         </Form.Label>
-        <Form.Control type="file" id={name} name={name} required={isRequired} />
+        {errorMsg ? (
+          <Alert variant="warning">
+            File is too large! Please upload a file less than {max}
+            KB.
+          </Alert>
+        ) : null}
+        <Form.Control
+          onChange={handleUploadValidation}
+          type="file"
+          id={name}
+          name={name}
+          required={isRequired}
+        />
       </Col>
     </Row>
   );
