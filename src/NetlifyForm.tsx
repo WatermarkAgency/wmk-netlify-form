@@ -112,7 +112,7 @@ const FieldFile = ({
   isRequired?: boolean;
   showLabel?: boolean;
   name: string;
-  label: string;
+  label?: string;
 }) => {
   return (
     <Row>
