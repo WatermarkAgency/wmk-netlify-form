@@ -103,6 +103,31 @@ const FieldSingle = ({
   );
 };
 
+const FieldFile = ({
+  isRequired = true,
+  showLabel = false,
+  name,
+  label = "Upload File"
+}: {
+  isRequired?: boolean;
+  showLabel?: boolean;
+  name: string;
+  label: string;
+}) => {
+  return (
+    <Row>
+      <Col>
+        <Form.Label
+          htmlFor={name}
+          visuallyHidden={showLabel ? undefined : true}>
+          {label} {isRequired ? <span>*</span> : null}
+        </Form.Label>
+        <Form.Control type="file" id={name} name={name} required={isRequired} />
+      </Col>
+    </Row>
+  );
+};
+
 const FieldPhone = ({ isRequired = true, showLabel = false }) => {
   return (
     <Row>
@@ -420,7 +445,8 @@ const registeredFields = {
   single: FieldSingle,
   message: FieldMessage,
   radio: FieldRadio,
-  hidden: FieldHidden
+  hidden: FieldHidden,
+  file: FieldFile
 };
 
 /**
