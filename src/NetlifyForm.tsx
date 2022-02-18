@@ -487,25 +487,27 @@ const registeredFields = {
   file: FieldFile
 };
 
+export type NetlifyFormInputs =
+  | "name"
+  | "email"
+  | "phone"
+  | "address"
+  | "select"
+  | "checkbox"
+  | "single"
+  | "message"
+  | "radio"
+  | "hidden"
+  | "file";
+
 /**
  * Netlify Form Builder Utility
  */
 export interface NetlifyFormProps {
   title: string;
   fields: {
-    as?:
-      | "name"
-      | "email"
-      | "phone"
-      | "address"
-      | "select"
-      | "checkbox"
-      | "single"
-      | "message"
-      | "radio"
-      | "hidden"
-      | "file";
-    props?: (
+    as?: NetlifyFormInputs;
+    props?:
       | { isRequired?: boolean; showLabel?: boolean }
       | FieldSingleProps
       | FieldAddressProps
@@ -513,8 +515,7 @@ export interface NetlifyFormProps {
       | FieldCheckboxProps
       | FieldSelectProps
       | FieldRadioProps
-      | FieldHiddenProps
-    )[];
+      | FieldHiddenProps;
     Component?: React.FunctionComponent;
   }[];
   config: {
