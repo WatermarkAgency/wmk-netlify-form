@@ -114,6 +114,7 @@ export type FieldFileProps = {
   name: string;
   label?: string;
   maxKBytes?: number;
+  maxMBytes?: number;
 };
 
 const FieldFile = ({
@@ -121,15 +122,20 @@ const FieldFile = ({
   showLabel = false,
   name,
   label = "Upload File",
-  maxKBytes
+  maxKBytes,
+  maxMBytes
 }: FieldFileProps) => {
   const [errorMsg, setErrorMsg] = useState(false);
-  const max = maxKBytes * 1024;
+  const max = maxKBytes
+    ? maxKBytes * 1024
+    : maxMBytes
+    ? maxMBytes * 1024 * 1024
+    : 0;
   const handleUploadValidation = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = event.currentTarget.files[0];
-    if (maxKBytes && file.size > max) {
+    if ((maxKBytes && file.size > max) || (maxMBytes && file.size > max)) {
       event.currentTarget.value = "";
       setErrorMsg(true);
     } else {
@@ -143,7 +149,12 @@ const FieldFile = ({
           htmlFor={name}
           visuallyHidden={showLabel ? undefined : true}>
           {label} {isRequired ? <span>*</span> : null}{" "}
-          {max ? <sup>Max Upload Size {max}KB</sup> : null}
+          {max > 0 ? (
+            <sub>
+              (Max Upload Size {max}
+              {maxKBytes ? "KB" : "MB"})
+            </sub>
+          ) : null}
         </Form.Label>
         {errorMsg ? (
           <Alert variant="warning">
