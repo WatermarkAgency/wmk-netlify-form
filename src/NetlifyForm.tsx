@@ -9,7 +9,7 @@ const isReactComponent = (V: React.ReactNode) => {
   );
 };
 
-type FieldBasicProps = { isRequired?: boolean; showLabel?: boolean };
+export type FieldBasicProps = { isRequired?: boolean; showLabel?: boolean };
 
 const FieldName = ({
   isRequired = true,
@@ -73,7 +73,7 @@ const FieldEmail = ({
   );
 };
 
-type FieldSingleProps = {
+export type FieldSingleProps = {
   name: string;
   label: string;
   isRequired?: boolean;
@@ -108,7 +108,7 @@ const FieldSingle = ({
   );
 };
 
-type FieldFileProps = {
+export type FieldFileProps = {
   isRequired?: boolean;
   showLabel?: boolean;
   name: string;
@@ -187,7 +187,7 @@ const FieldPhone = ({
   );
 };
 
-type FieldAddressProps = {
+export type FieldAddressProps = {
   states?: string[];
   isRequired?: boolean;
   showLabel?: boolean;
@@ -326,7 +326,7 @@ const FieldAddress = ({
   );
 };
 
-type FieldSelectProps = {
+export type FieldSelectProps = {
   name: string;
   label: string;
   options: string[];
@@ -367,7 +367,7 @@ const FieldSelect = ({
   );
 };
 
-type FieldCheckboxProps = {
+export type FieldCheckboxProps = {
   label: string;
   name: string;
   text: string;
@@ -403,7 +403,7 @@ const FieldCheckbox = ({
   );
 };
 
-type FieldMessageProps = {
+export type FieldMessageProps = {
   isRequired?: boolean;
   showLabel?: boolean;
 };
@@ -432,7 +432,7 @@ const FieldMessage = ({ isRequired, showLabel = false }: FieldMessageProps) => {
   );
 };
 
-type FieldRadioProps = {
+export type FieldRadioProps = {
   options: { label: string; disabled?: boolean }[];
   inline?: boolean;
   name: string;
@@ -475,7 +475,7 @@ const FieldRadio = ({
   );
 };
 
-type FieldHiddenProps = { name: string; value: string };
+export type FieldHiddenProps = { name: string; value: string };
 
 const FieldHidden = ({ name, value }: FieldHiddenProps) => {
   return <input type="hidden" name={name} value={value} />;
