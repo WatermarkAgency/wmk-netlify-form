@@ -506,7 +506,7 @@ export type NetlifyFormInputs =
 export interface NetlifyFormProps {
   title: string;
   fields: {
-    as?: NetlifyFormInputs;
+    as?: NetlifyFormInputs | string;
     props?:
       | { isRequired?: boolean; showLabel?: boolean }
       | FieldSingleProps
