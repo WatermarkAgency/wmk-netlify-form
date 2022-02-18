@@ -1,6 +1,6 @@
 {
   "name": "wmk-netlify-form",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "WMK Netlify Form Component",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",

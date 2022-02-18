@@ -151,7 +151,7 @@ const FieldFile = ({
           {label} {isRequired ? <span>*</span> : null}{" "}
           {max > 0 ? (
             <sub>
-              (Max Upload Size {max}
+              (Max Upload Size {maxKBytes || maxMBytes}
               {maxKBytes ? "KB" : "MB"})
             </sub>
           ) : null}
