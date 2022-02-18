@@ -157,9 +157,10 @@ const FieldFile = ({
           ) : null}
         </Form.Label>
         {errorMsg ? (
-          <Alert variant="warning">
-            File is too large! Please upload a file less than {max}
-            KB.
+          <Alert variant="danger">
+            File is too large! Please upload a file less than{" "}
+            {maxKBytes || maxMBytes}
+            {maxKBytes ? "KB" : "MB"}.
           </Alert>
         ) : null}
         <Form.Control
