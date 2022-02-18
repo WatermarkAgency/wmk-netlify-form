@@ -481,20 +481,6 @@ const FieldHidden = ({ name, value }: FieldHiddenProps) => {
   return <input type="hidden" name={name} value={value} />;
 };
 
-// const registeredFields = {
-//   name: FieldName,
-//   email: FieldEmail,
-//   phone: FieldPhone,
-//   address: FieldAddress,
-//   select: FieldSelect,
-//   checkbox: FieldCheckbox,
-//   single: FieldSingle,
-//   message: FieldMessage,
-//   radio: FieldRadio,
-//   hidden: FieldHidden,
-//   file: FieldFile
-// };
-
 export type NetlifyFormAs =
   | "name"
   | "email"
