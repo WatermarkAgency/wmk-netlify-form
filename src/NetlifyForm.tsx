@@ -505,7 +505,7 @@ export interface NetlifyFormProps {
       | "radio"
       | "hidden"
       | "file";
-    props?:
+    props?: (
       | { isRequired?: boolean; showLabel?: boolean }
       | FieldSingleProps
       | FieldAddressProps
@@ -513,7 +513,8 @@ export interface NetlifyFormProps {
       | FieldCheckboxProps
       | FieldSelectProps
       | FieldRadioProps
-      | FieldHiddenProps;
+      | FieldHiddenProps
+    )[];
     Component?: React.FunctionComponent;
   }[];
   config: {
