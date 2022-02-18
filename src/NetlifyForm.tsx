@@ -103,19 +103,21 @@ const FieldSingle = ({
   );
 };
 
+type FieldFileProps = {
+  isRequired?: boolean;
+  showLabel?: boolean;
+  name: string;
+  label?: string;
+  maxKBytes?: number;
+};
+
 const FieldFile = ({
   isRequired = true,
   showLabel = false,
   name,
   label = "Upload File",
   maxKBytes
-}: {
-  isRequired?: boolean;
-  showLabel?: boolean;
-  name: string;
-  label?: string;
-  maxKBytes?: number;
-}) => {
+}: FieldFileProps) => {
   const [errorMsg, setErrorMsg] = useState(false);
   const max = maxKBytes * 1024;
   const handleUploadValidation = (
@@ -175,6 +177,12 @@ const FieldPhone = ({ isRequired = true, showLabel = false }) => {
       </Col>
     </Row>
   );
+};
+
+type FieldAddressProps = {
+  states?: string[];
+  isRequired?: boolean;
+  showLabel?: boolean;
 };
 
 const FieldAddress = ({
@@ -241,7 +249,7 @@ const FieldAddress = ({
   ],
   isRequired = false,
   showLabel = false
-}) => {
+}: FieldAddressProps) => {
   return (
     <Row>
       <Col lg={12}>
@@ -459,7 +467,9 @@ const FieldRadio = ({
   );
 };
 
-const FieldHidden = ({ name, value }: { name: string; value: string }) => {
+type FieldHiddenProps = { name: string; value: string };
+
+const FieldHidden = ({ name, value }: FieldHiddenProps) => {
   return <input type="hidden" name={name} value={value} />;
 };
 
@@ -493,18 +503,17 @@ export interface NetlifyFormProps {
       | "single"
       | "message"
       | "radio"
-      | "hidden";
-    props?: {
-      name?: string;
-      label?: string;
-      value?: string;
-      options?: string[] | { label: string; disabled?: boolean }[];
-      showLabel?: boolean;
-      inline?: boolean;
-      isRequired?: boolean;
-      text?: string;
-      states?: string[];
-    };
+      | "hidden"
+      | "file";
+    props?:
+      | { isRequired?: boolean; showLabel?: boolean }
+      | FieldSingleProps
+      | FieldAddressProps
+      | FieldFileProps
+      | FieldCheckboxProps
+      | FieldSelectProps
+      | FieldRadioProps
+      | FieldHiddenProps;
     Component?: React.FunctionComponent;
   }[];
   config: {
@@ -519,7 +528,6 @@ export interface NetlifyFormProps {
 }
 
 export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
-  //console.log("props:", title, fields, config);
   const [submitted, setSubmitted] = useState<boolean>();
   const [formElement, setFormElement] = useState<HTMLFormElement>();
   const TitleComp = title;
@@ -533,7 +541,6 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
   const postUrl = config.postUrl ? config.postUrl : "/";
   const keepDom = config.keepDom;
   let ThankYouJsx: React.ReactNode = null;
-  //console.log(thankYou);
   switch (true) {
     case isReactComponent(thankYou):
       ThankYouJsx = thankYou;
