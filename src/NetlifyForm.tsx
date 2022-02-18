@@ -522,7 +522,7 @@ export interface NetlifyFormProps {
     name: string;
     thankYou?: React.ReactNode;
     thankYouPage?: string;
-    consoleMessage: string;
+    consoleMessage?: boolean;
     submit?: string;
     postUrl?: string;
     keepDom?: boolean;
