@@ -1,6 +1,6 @@
 {
   "name": "wmk-netlify-form",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "WMK Netlify Form Component",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -19,7 +19,7 @@
     "csstype": "^3.0.10",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
-    "rollup": "^2.63.0",
+    "rollup": "^2.67.3",
     "rollup-plugin-dts": "^4.1.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",

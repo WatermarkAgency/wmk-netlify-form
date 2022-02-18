@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
-import get from "lodash/get";
 import { useState, useRef, useEffect } from "react";
 
 const isReactComponent = (V: React.ReactNode) => {
@@ -10,9 +9,12 @@ const isReactComponent = (V: React.ReactNode) => {
   );
 };
 
-const NullComponent = () => <></>;
+type FieldBasicProps = { isRequired?: boolean; showLabel?: boolean };
 
-const FieldName = ({ isRequired = true, showLabel = false }) => {
+const FieldName = ({
+  isRequired = true,
+  showLabel = false
+}: FieldBasicProps) => {
   return (
     <Row>
       <Col lg={6}>
@@ -47,7 +49,10 @@ const FieldName = ({ isRequired = true, showLabel = false }) => {
   );
 };
 
-const FieldEmail = ({ isRequired = true, showLabel = false }) => {
+const FieldEmail = ({
+  isRequired = true,
+  showLabel = false
+}: FieldBasicProps) => {
   return (
     <Row>
       <Col>
@@ -158,7 +163,10 @@ const FieldFile = ({
   );
 };
 
-const FieldPhone = ({ isRequired = true, showLabel = false }) => {
+const FieldPhone = ({
+  isRequired = true,
+  showLabel = false
+}: FieldBasicProps) => {
   return (
     <Row>
       <Col>
@@ -473,19 +481,19 @@ const FieldHidden = ({ name, value }: FieldHiddenProps) => {
   return <input type="hidden" name={name} value={value} />;
 };
 
-const registeredFields = {
-  name: FieldName,
-  email: FieldEmail,
-  phone: FieldPhone,
-  address: FieldAddress,
-  select: FieldSelect,
-  checkbox: FieldCheckbox,
-  single: FieldSingle,
-  message: FieldMessage,
-  radio: FieldRadio,
-  hidden: FieldHidden,
-  file: FieldFile
-};
+// const registeredFields = {
+//   name: FieldName,
+//   email: FieldEmail,
+//   phone: FieldPhone,
+//   address: FieldAddress,
+//   select: FieldSelect,
+//   checkbox: FieldCheckbox,
+//   single: FieldSingle,
+//   message: FieldMessage,
+//   radio: FieldRadio,
+//   hidden: FieldHidden,
+//   file: FieldFile
+// };
 
 export type NetlifyFormAs =
   | "name"
@@ -508,15 +516,17 @@ export interface NetlifyFormProps {
   fields: {
     as?: NetlifyFormAs;
     props?:
-      | { isRequired?: boolean; showLabel?: boolean }
+      | FieldBasicProps
       | FieldSingleProps
       | FieldAddressProps
       | FieldFileProps
       | FieldCheckboxProps
       | FieldSelectProps
       | FieldRadioProps
-      | FieldHiddenProps;
-    Component?: React.FunctionComponent;
+      | FieldHiddenProps
+      | {}
+      | { [key: string]: any };
+    Component?: React.FunctionComponent<{ [key: string]: any } | {}>;
   }[];
   config: {
     name: string;
@@ -613,16 +623,32 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
                   ? fields.map((field, i) => {
                       const fieldType = field.as;
                       const FieldComp = field.Component;
-                      const FieldJsx =
-                        FieldComp && isReactComponent(FieldComp)
-                          ? FieldComp
-                          : get(
-                              registeredFields,
-                              `[${fieldType}]`,
-                              NullComponent
-                            );
-                      const props = get(field, `props`);
-                      return <FieldJsx key={fieldType + i} {...props} />;
+                      const props = field.props;
+                      return FieldComp && isReactComponent(FieldComp) ? (
+                        <FieldComp {...props} />
+                      ) : fieldType === "address" ? (
+                        <FieldAddress {...(props as FieldAddressProps)} />
+                      ) : fieldType === "checkbox" ? (
+                        <FieldCheckbox {...(props as FieldCheckboxProps)} />
+                      ) : fieldType === "email" ? (
+                        <FieldEmail {...(props as FieldBasicProps)} />
+                      ) : fieldType === "file" ? (
+                        <FieldFile {...(props as FieldFileProps)} />
+                      ) : fieldType === "hidden" ? (
+                        <FieldHidden {...(props as FieldHiddenProps)} />
+                      ) : fieldType === "message" ? (
+                        <FieldMessage {...(props as FieldMessageProps)} />
+                      ) : fieldType === "name" ? (
+                        <FieldName {...(props as FieldBasicProps)} />
+                      ) : fieldType === "phone" ? (
+                        <FieldPhone {...(props as FieldBasicProps)} />
+                      ) : fieldType === "radio" ? (
+                        <FieldRadio {...(props as FieldRadioProps)} />
+                      ) : fieldType === "select" ? (
+                        <FieldSelect {...(props as FieldSelectProps)} />
+                      ) : fieldType === "single" ? (
+                        <FieldSingle {...(props as FieldSingleProps)} />
+                      ) : null;
                     })
                   : null}
                 <Row>
