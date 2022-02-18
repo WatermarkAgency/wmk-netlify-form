@@ -504,7 +504,7 @@ export type NetlifyFormAs =
  * Netlify Form Builder Utility
  */
 export interface NetlifyFormProps {
-  title: string;
+  title?: string | React.FunctionComponent;
   fields: {
     as?: NetlifyFormAs;
     props?:
