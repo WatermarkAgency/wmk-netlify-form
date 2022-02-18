@@ -487,7 +487,7 @@ const registeredFields = {
   file: FieldFile
 };
 
-export type NetlifyFormInputs =
+export type NetlifyFormAs =
   | "name"
   | "email"
   | "phone"
@@ -506,7 +506,7 @@ export type NetlifyFormInputs =
 export interface NetlifyFormProps {
   title: string;
   fields: {
-    as?: NetlifyFormInputs | string;
+    as?: NetlifyFormAs;
     props?:
       | { isRequired?: boolean; showLabel?: boolean }
       | FieldSingleProps
