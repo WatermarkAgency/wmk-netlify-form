@@ -126,7 +126,6 @@ const FieldFile = ({
   maxMBytes
 }: FieldFileProps) => {
   const [errorMsg, setErrorMsg] = useState(false);
-  const [fileUrl, setFileUrl] = useState("");
   const max = maxKBytes
     ? maxKBytes * 1024
     : maxMBytes
@@ -141,7 +140,6 @@ const FieldFile = ({
       setErrorMsg(true);
     } else {
       setErrorMsg(false);
-      // event.currentTarget.value = file
     }
   };
   return (
