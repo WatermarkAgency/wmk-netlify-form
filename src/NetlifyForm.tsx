@@ -126,6 +126,7 @@ const FieldFile = ({
   maxMBytes
 }: FieldFileProps) => {
   const [errorMsg, setErrorMsg] = useState(false);
+  const [fileUrl, setFileUrl] = useState("");
   const max = maxKBytes
     ? maxKBytes * 1024
     : maxMBytes
@@ -140,6 +141,7 @@ const FieldFile = ({
       setErrorMsg(true);
     } else {
       setErrorMsg(false);
+      // event.currentTarget.value = file
     }
   };
   return (
@@ -534,6 +536,7 @@ export interface NetlifyFormProps {
     submit?: string;
     postUrl?: string;
     keepDom?: boolean;
+    encType?: string;
   };
 }
 
@@ -550,6 +553,7 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
   const submit = config.submit ? config.submit : "Submit";
   const postUrl = config.postUrl ? config.postUrl : "/";
   const keepDom = config.keepDom;
+  const encType = config.encType;
   let ThankYouJsx: React.ReactNode = null;
   switch (true) {
     case isReactComponent(thankYou):
@@ -614,7 +618,8 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
               method="post"
               ref={curForm}
               data-netlify="true"
-              onSubmit={formSubmit}>
+              onSubmit={formSubmit}
+              encType={encType}>
               <input type="hidden" name="form-name" value={formName} />
               <Container fluid>
                 {Array.isArray(fields)
