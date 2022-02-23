@@ -2,6 +2,8 @@ import * as React from "react";
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 import { useState, useRef, useEffect } from "react";
 
+const NullComponent = () => <></>;
+
 const isReactComponent = (V: React.ReactNode) => {
   return (
     (typeof V === "function" && React.isValidElement(<V />)) ||
@@ -134,12 +136,17 @@ const FieldFile = ({
   const handleUploadValidation = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const file = event.currentTarget.files[0];
-    if ((maxKBytes && file.size > max) || (maxMBytes && file.size > max)) {
-      event.currentTarget.value = "";
-      setErrorMsg(true);
+    const files = event.currentTarget.files;
+    if (files) {
+      const file = files[0];
+      if ((maxKBytes && file.size > max) || (maxMBytes && file.size > max)) {
+        event.currentTarget.value = "";
+        setErrorMsg(true);
+      } else {
+        setErrorMsg(false);
+      }
     } else {
-      setErrorMsg(false);
+      console.log("Error: no files in FileList");
     }
   };
   return (
@@ -510,7 +517,7 @@ export type NetlifyFormAs =
  * Netlify Form Builder Utility
  */
 export interface NetlifyFormProps {
-  title?: string | React.FunctionComponent;
+  title?: string | React.FunctionComponent<any>;
   fields: {
     as?: NetlifyFormAs;
     props?:
@@ -534,14 +541,14 @@ export interface NetlifyFormProps {
     submit?: string;
     postUrl?: string;
     keepDom?: boolean;
-    encType?: string;
+    encType?: "multipart/form-data" | "application/x-www-form-urlencoded";
   };
 }
 
 export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
   const [submitted, setSubmitted] = useState<boolean>();
   const [formElement, setFormElement] = useState<HTMLFormElement>();
-  const TitleComp = title;
+  const TitleComp = title && typeof title !== "string" ? title : NullComponent;
   const formName = config.name;
   const thankYouPage = config.thankYouPage;
   const thankYou: React.ReactNode = config.thankYou
@@ -553,6 +560,7 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
   const keepDom = config.keepDom;
   const encType = config.encType;
   let ThankYouJsx: React.ReactNode = null;
+
   switch (true) {
     case isReactComponent(thankYou):
       ThankYouJsx = thankYou;
@@ -568,21 +576,22 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
       ThankYouJsx = () => <div>Thank you for your submission!</div>;
   }
 
-  const curForm = useRef();
+  const curForm = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const current = curForm.current;
-    setFormElement(current);
+    if (current) {
+      setFormElement(current);
+    }
   }, [setFormElement]);
 
   const formSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const formData: any = new FormData(formElement);
-    const body = new URLSearchParams(formData).toString();
+    const formData = new FormData(formElement);
+    const body = new URLSearchParams(formData as any).toString();
     fetch(postUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body
+      body: encType === "application/x-www-form-urlencoded" ? body : formData
     })
       .then(() => {
         if (consoleMessage) {
@@ -606,11 +615,7 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
       ) : (
         <>
           <div style={{ display: submitted && showForm ? "none" : "block" }}>
-            {typeof title === "string" ? (
-              <h2>{title}</h2>
-            ) : isReactComponent(title) ? (
-              <TitleComp />
-            ) : null}
+            {typeof title === "string" ? <h2>{title}</h2> : <TitleComp />}
             <Form
               name={formName}
               method="post"
@@ -625,33 +630,69 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
                       const fieldType = field.as;
                       const FieldComp = field.Component;
                       const props = field.props;
-                      return FieldComp && isReactComponent(FieldComp) ? (
-                        <FieldComp {...props} />
+                      return fieldType &&
+                        FieldComp &&
+                        isReactComponent(FieldComp) ? (
+                        <FieldComp {...props} key={fieldType + i} />
                       ) : fieldType === "address" ? (
-                        <FieldAddress {...(props as FieldAddressProps)} />
+                        <FieldAddress
+                          {...(props as FieldAddressProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "checkbox" ? (
-                        <FieldCheckbox {...(props as FieldCheckboxProps)} />
+                        <FieldCheckbox
+                          {...(props as FieldCheckboxProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "email" ? (
-                        <FieldEmail {...(props as FieldBasicProps)} />
+                        <FieldEmail
+                          {...(props as FieldBasicProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "file" ? (
-                        <FieldFile {...(props as FieldFileProps)} />
+                        <FieldFile
+                          {...(props as FieldFileProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "hidden" ? (
-                        <FieldHidden {...(props as FieldHiddenProps)} />
+                        <FieldHidden
+                          {...(props as FieldHiddenProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "message" ? (
-                        <FieldMessage {...(props as FieldMessageProps)} />
+                        <FieldMessage
+                          {...(props as FieldMessageProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "name" ? (
-                        <FieldName {...(props as FieldBasicProps)} />
+                        <FieldName
+                          {...(props as FieldBasicProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "phone" ? (
-                        <FieldPhone {...(props as FieldBasicProps)} />
+                        <FieldPhone
+                          {...(props as FieldBasicProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "radio" ? (
-                        <FieldRadio {...(props as FieldRadioProps)} />
+                        <FieldRadio
+                          {...(props as FieldRadioProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "select" ? (
-                        <FieldSelect {...(props as FieldSelectProps)} />
+                        <FieldSelect
+                          {...(props as FieldSelectProps)}
+                          key={fieldType + i}
+                        />
                       ) : fieldType === "single" ? (
-                        <FieldSingle {...(props as FieldSingleProps)} />
+                        <FieldSingle
+                          {...(props as FieldSingleProps)}
+                          key={fieldType + i}
+                        />
                       ) : null;
                     })
                   : null}
+
                 <Row>
                   <Col className="submit-col">
                     <Button type="submit">{submit}</Button>
