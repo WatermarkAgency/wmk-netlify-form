@@ -2,6 +2,15 @@ import * as React from "react";
 import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
 import { useState, useRef, useEffect } from "react";
 
+const parseParams = (search: string) => {
+  return JSON.parse(
+    '{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
+    function (key, value) {
+      return key === "" ? value : decodeURIComponent(value);
+    }
+  );
+};
+
 const NullComponent = () => <></>;
 
 const isReactComponent = (V: React.ReactNode) => {
@@ -520,17 +529,7 @@ export interface NetlifyFormProps {
   title?: string | React.FunctionComponent<any>;
   fields: {
     as?: NetlifyFormAs;
-    props?:
-      | FieldBasicProps
-      | FieldSingleProps
-      | FieldAddressProps
-      | FieldFileProps
-      | FieldCheckboxProps
-      | FieldSelectProps
-      | FieldRadioProps
-      | FieldHiddenProps
-      | {}
-      | { [key: string]: any };
+    props?: { [key: string]: any };
     Component?: React.FunctionComponent<{ [key: string]: any } | {}>;
   }[];
   config: {
@@ -542,10 +541,17 @@ export interface NetlifyFormProps {
     postUrl?: string;
     keepDom?: boolean;
     encType?: "multipart/form-data" | "application/x-www-form-urlencoded";
+    testing?: boolean;
   };
+  onSubmit?: (data: { [key: string]: string }) => void;
 }
 
-export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
+export const NetlifyForm = ({
+  title,
+  fields,
+  config,
+  onSubmit
+}: NetlifyFormProps) => {
   const [submitted, setSubmitted] = useState<boolean>();
   const [formElement, setFormElement] = useState<HTMLFormElement>();
   const TitleComp = title && typeof title !== "string" ? title : NullComponent;
@@ -560,7 +566,7 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
   const keepDom = config.keepDom;
   const encType = config.encType;
   let ThankYouJsx: React.ReactNode = null;
-
+  const testing = config.testing;
   switch (true) {
     case isReactComponent(thankYou):
       ThankYouJsx = thankYou;
@@ -588,24 +594,35 @@ export const NetlifyForm = ({ title, fields, config }: NetlifyFormProps) => {
   const formSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const formData = new FormData(formElement);
-    const body = new URLSearchParams(formData as any).toString();
-    fetch(postUrl, {
-      method: "POST",
-      body: encType === "application/x-www-form-urlencoded" ? body : formData
-    })
-      .then(() => {
-        if (consoleMessage) {
-          console.log("Form submit success: ", body);
-        }
+    const params = new URLSearchParams(formData as any);
+    const body = params.toString();
+    if (!testing) {
+      fetch(postUrl, {
+        method: "POST",
+        body: encType === "application/x-www-form-urlencoded" ? body : formData
       })
-      .then(() => {
-        if (!ThankYouJsx && window && typeof thankYou === "string") {
-          window.location.href = thankYou;
-        } else {
-          setSubmitted(true);
-        }
-      })
-      .catch((error) => console.log(error));
+        .then(() => {
+          if (consoleMessage) {
+            console.log("Form submit success: ", body);
+          }
+          if (onSubmit) {
+            onSubmit(parseParams(body));
+          }
+        })
+        .then(() => {
+          if (!ThankYouJsx && window && typeof thankYou === "string") {
+            window.location.href = thankYou;
+          } else {
+            setSubmitted(true);
+          }
+        })
+        .catch((error) => console.log(error));
+    } else {
+      console.log("Test submission data:", body);
+      if (onSubmit) {
+        onSubmit(parseParams(body));
+      }
+    }
   };
   const showForm = ThankYouJsx && keepDom;
   return (
