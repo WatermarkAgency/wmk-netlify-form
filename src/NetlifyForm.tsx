@@ -566,7 +566,7 @@ export const NetlifyForm = ({
   const keepDom = config.keepDom;
   const encType = config.encType;
   let ThankYouJsx: React.ReactNode = null;
-  const testing = config.testing;
+  const testing = config.testing ? true : false;
   switch (true) {
     case isReactComponent(thankYou):
       ThankYouJsx = thankYou;
@@ -647,9 +647,7 @@ export const NetlifyForm = ({
                       const fieldType = field.as;
                       const FieldComp = field.Component;
                       const props = field.props;
-                      return fieldType &&
-                        FieldComp &&
-                        isReactComponent(FieldComp) ? (
+                      return FieldComp && isReactComponent(FieldComp) ? (
                         <FieldComp {...props} key={fieldType + i} />
                       ) : fieldType === "address" ? (
                         <FieldAddress

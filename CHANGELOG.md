@@ -2,7 +2,13 @@
 
 Notable changes to this project will be documented in this file.
 
-### [1.2.0] (2022-05-20)
+### [1.3.1] (2022-05-24)
+
+#### Bug Fix
+
+- Fixed bad logic that was preventing rendering custom components without "as" defined.
+
+### [1.3.0] (2022-05-20)
 
 #### Features
 
@@ -18,7 +24,6 @@ Notable changes to this project will be documented in this file.
 #### Bug Fixes
 
 - "multipart/form" is default encoding sent without headers
-
 
 #### Chores
 
