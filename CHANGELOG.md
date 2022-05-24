@@ -2,11 +2,12 @@
 
 Notable changes to this project will be documented in this file.
 
-### [1.3.1] (2022-05-24)
+### [1.3.2] (2022-05-24)
 
 #### Bug Fix
 
 - Fixed bad logic that was preventing rendering custom components without "as" defined.
+- Added alert when testing is on to prevent it from accidentally being left on.
 
 ### [1.3.0] (2022-05-20)
 

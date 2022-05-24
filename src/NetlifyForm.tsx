@@ -618,6 +618,7 @@ export const NetlifyForm = ({
         })
         .catch((error) => console.log(error));
     } else {
+      alert("Testing is on. See console for data.")
       console.log("Test submission data:", body);
       if (onSubmit) {
         onSubmit(parseParams(body));
