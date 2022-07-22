@@ -29,6 +29,6 @@ export interface NetlifyFormProps {
     encType?: "multipart/form-data" | "application/x-www-form-urlencoded"; // Only change to multipart if submitting a file
     testing?: boolean; // Set to true to test form without submitting
   };
-  onSubmit?: (data: { [key: string]: string }) => void;
+  onSubmit?: (data: { [key: string]: string }) => void; // Run code with access to submitted data on sucessful submit
 }
 ```
